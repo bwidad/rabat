@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Météo Rabat - Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: linear-gradient(to right, #74ebd5, #ACB6E5);
+      color: #333;
+      text-align: center;
+    }
+
+    header {
+      background: #004d61;
+      color: white;
+      padding: 1rem;
+    }
+
+    main {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 70vh;
+    }
+
+    .card {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      max-width: 300px;
+    }
+
+    .card h2 {
+      margin-bottom: 1rem;
+    }
+
+    footer {
+      background: #004d61;
+      color: white;
+      padding: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🌤️ Dashboard Météo Rabat</h1>
+  </header>
+
+  <main>
+    <section id="weather">
+      <div class="card">
+        <h2 id="city">Rabat</h2>
+        <p id="temperature">-- °C</p>
+        <p id="description">Chargement...</p>
+        <p id="humidity">Humidité: --%</p>
+        <p id="wind">Vent: -- km/h</p>
+        <p id="updated">Dernière mise à jour: --</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Déployé sur Azure Web App Node 22 🚀</p>
+  </footer>
+
+  <script>
+    const apiKey = "TON_API_KEY_OPENWEATHERMAP"; // Remplace par ta clé API
+    const city = "Rabat";
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric&lang=fr`;
+
+    async function fetchWeather() {
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        document.getElementById("temperature").textContent = `${Math.round(data.main.temp)} °C`;
+        document.getElementById("description").textContent = data.weather[0].description;
+        document.getElementById("humidity").textContent = `Humidité: ${data.main.humidity}%`;
+        document.getElementById("wind").textContent = `Vent: ${Math.round(data.wind.speed)} km/h`;
+        document.getElementById("updated").textContent = `Dernière mise à jour: ${new Date().toLocaleTimeString()}`;
+      } catch (error) {
+        console.error("Erreur de récupération météo:", error);
+        document.getElementById("description").textContent = "Impossible de charger la météo.";
+      }
+    }
+
+    // Mise à jour toutes les 30 secondes
+    fetchWeather();
+    setInterval(fetchWeather, 30000);
+  </script>
+</body>
+</html>
