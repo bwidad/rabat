@@ -68,27 +68,22 @@
   </footer>
 
   <script>
-    const apiKey = "TON_API_KEY_OPENWEATHERMAP"; // Remplace par ta clé API
-    const city = "Rabat";
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric&lang=fr`;
-
     async function fetchWeather() {
       try {
-        const response = await fetch(url);
+        const response = await fetch("/api/weather");
         const data = await response.json();
 
-        document.getElementById("temperature").textContent = `${Math.round(data.main.temp)} °C`;
-        document.getElementById("description").textContent = data.weather[0].description;
-        document.getElementById("humidity").textContent = `Humidité: ${data.main.humidity}%`;
-        document.getElementById("wind").textContent = `Vent: ${Math.round(data.wind.speed)} km/h`;
-        document.getElementById("updated").textContent = `Dernière mise à jour: ${new Date().toLocaleTimeString()}`;
+        document.getElementById("temperature").textContent = `${Math.round(data.temperature)} °C`;
+        document.getElementById("description").textContent = data.description;
+        document.getElementById("humidity").textContent = `Humidité: ${data.humidity}%`;
+        document.getElementById("wind").textContent = `Vent: ${Math.round(data.wind)} km/h`;
+        document.getElementById("updated").textContent = `Dernière mise à jour: ${new Date(data.updated_at).toLocaleTimeString()}`;
       } catch (error) {
-        console.error("Erreur de récupération météo:", error);
+        console.error("Erreur:", error);
         document.getElementById("description").textContent = "Impossible de charger la météo.";
       }
     }
 
-    // Mise à jour toutes les 30 secondes
     fetchWeather();
     setInterval(fetchWeather, 30000);
   </script>
